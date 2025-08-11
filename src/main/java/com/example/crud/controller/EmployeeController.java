@@ -8,6 +8,14 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,6 +23,7 @@ import java.util.Optional;
 
 @Controller("/employees")
 @ExecuteOn(TaskExecutors.IO)
+@Tag(name = "Сотрудники", description = "Управление данными сотрудников")
 public class EmployeeController {
 
     private final EmployeeRepository repository;
@@ -29,18 +38,70 @@ public class EmployeeController {
     }
 
     @Get
+    @Operation(
+            summary = "Получить всех сотрудников",
+            description = "Возвращает полный список сотрудников в системе"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Успешное получение списка сотрудников",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Employee.class, type = "array"))
+    )
     public List<Employee> getAll() {
         return repository.findAll();
     }
 
     @Get("/{id}")
-    public Optional<Employee> getById(Long id) {
+    @Operation(
+            summary = "Получить сотрудника по ID",
+            description = "Возвращает данные конкретного сотрудника по его идентификатору"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Сотрудник найден",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Employee.class))
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Сотрудник с указанным ID не найден"
+    )
+    public Optional<Employee> getById(
+            @Parameter(
+                    name = "id",
+                    description = "Идентификатор сотрудника",
+                    required = true,
+                    in = ParameterIn.PATH
+            )
+            Long id
+    ) {
         return repository.findById(id);
     }
 
     @Post
     @Status(HttpStatus.CREATED)
-    public Employee create(@Body @Valid EmployeeDTO employeeDTO) {
+    @Operation(
+            summary = "Создать нового сотрудника",
+            description = "Добавляет нового сотрудника в систему. Логин и email должны быть уникальными."
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Сотрудник успешно создан",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Employee.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Некорректные входные данные или нарушение уникальности"
+    )
+    public Employee create(
+            @RequestBody(
+                    description = "Данные нового сотрудника",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
+            @Body @Valid EmployeeDTO employeeDTO
+    ) {
         // Проверка уникальности логина и email
         if (repository.findByLogin(employeeDTO.getLogin()).isPresent()) {
             throw new IllegalArgumentException("Логин уже существует");
@@ -55,7 +116,39 @@ public class EmployeeController {
     }
 
     @Put("/{id}")
-    public Employee update(Long id, @Body @Valid EmployeeDTO employeeDTO) {
+    @Operation(
+            summary = "Обновить данные сотрудника",
+            description = "Обновляет информацию о существующем сотруднике. При изменении логина/email проверяется уникальность."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Данные сотрудника успешно обновлены",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Employee.class))
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Некорректные данные или нарушение уникальности"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Сотрудник с указанным ID не найден"
+    )
+    public Employee update(
+            @Parameter(
+                    name = "id",
+                    description = "Идентификатор сотрудника для обновления",
+                    required = true,
+                    in = ParameterIn.PATH
+            )
+            Long id,
+
+            @RequestBody(
+                    description = "Обновленные данные сотрудника",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = EmployeeDTO.class)))
+            @Body @Valid EmployeeDTO employeeDTO
+    ) {
         Employee employee = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Сотрудник не был найден"));
 
@@ -87,7 +180,27 @@ public class EmployeeController {
 
     @Delete("/{id}")
     @Status(HttpStatus.NO_CONTENT)
-    public void delete(Long id) {
+    @Operation(
+            summary = "Удалить сотрудника",
+            description = "Удаляет сотрудника из системы по его идентификатору"
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Сотрудник успешно удален"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Сотрудник с указанным ID не найден"
+    )
+    public void delete(
+            @Parameter(
+                    name = "id",
+                    description = "Идентификатор сотрудника для удаления",
+                    required = true,
+                    in = ParameterIn.PATH
+            )
+            Long id
+    ) {
         repository.deleteById(id);
     }
 
