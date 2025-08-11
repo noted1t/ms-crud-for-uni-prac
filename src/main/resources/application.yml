@@ -9,6 +9,14 @@ micronaut:
         mapping: /swagger/**
     versioning:
       enabled: true
+  jpa:
+    default:
+      properties:
+        hibernate:
+          hbm2ddl:
+            auto: update
+          show_sql: true
+          format_sql: true
   openapi:
     enabled: true
     responses:
@@ -25,3 +33,11 @@ micronaut:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  datasources:
+    default:
+      url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME}
+      driverClassName: org.postgresql.Driver
+      username: ${DB_USER}
+      password: ${DB_PASSWORD}
+      schema-generate: UPDATE
+      dialect: POSTGRES
