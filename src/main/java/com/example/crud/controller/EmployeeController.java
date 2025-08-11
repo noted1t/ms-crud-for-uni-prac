@@ -11,6 +11,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -45,9 +46,10 @@ public class EmployeeController {
     @ApiResponse(
             responseCode = "200",
             description = "Успешное получение списка сотрудников",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Employee.class, type = "array"))
-    )
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Employee.class))
+            ))
     public List<Employee> getAll() {
         return repository.findAll();
     }

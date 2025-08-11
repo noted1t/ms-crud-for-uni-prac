@@ -17,17 +17,33 @@ dependencies {
     annotationProcessor("io.micronaut.data:micronaut-data-processor")
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
-    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
+
+    // Для БД
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    implementation("io.micronaut.data:micronaut-data-tx-hibernate")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.postgresql:postgresql")
+
+    // Валидация и крипт
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("javax.validation:validation-api:2.0.1.Final")
+
+    // Клиент
     compileOnly("io.micronaut:micronaut-http-client")
+
+    // Ломбок
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("org.postgresql:postgresql")
+
+    //
     runtimeOnly("org.yaml:snakeyaml")
+
+    // Тесты
+    testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -37,9 +53,6 @@ dependencies {
     // Swagger аннотации
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     implementation("io.micronaut.openapi:micronaut-openapi-annotations")
-
-    // Swagger UI
-    runtimeOnly("io.micronaut.views:micronaut-views-swagger-ui")
 
     // Для генерации JSON схемы DTO
     implementation("io.micronaut:micronaut-jackson-databind")
