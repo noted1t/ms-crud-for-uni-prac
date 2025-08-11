@@ -27,16 +27,28 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.yaml:snakeyaml")
     testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.assertj:assertj-core")
+
+    // Swagger аннотации
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi")
+    implementation("io.micronaut.openapi:micronaut-openapi-annotations")
+
+    // Swagger UI
+    runtimeOnly("io.micronaut.views:micronaut-views-swagger-ui")
+
+    // Для генерации JSON схемы DTO
+    implementation("io.micronaut:micronaut-jackson-databind")
+
 }
 
 
 application {
-    mainClass = "com.example.Application"
+    mainClass = "com.example.crud.Application"
 }
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
