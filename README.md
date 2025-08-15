@@ -67,9 +67,15 @@ src/
 
 └── test/                                        # Тесты
 
-## Быстрый старт
+## Старт
 
-### 1. Клонирование репозитория
-```bash
-git clone https://github.com/noted1t/ms-crud-for-uni-prac.git
-cd ms-crud-for-uni-prac
+Для запуска проекта понадобится .env-файл, в котором будут указаны данные БД
+
+### Переменные окружения:
+
+#### DB_USER
+#### DB_PASSWORD
+#### DB_NAME
+#### DB_HOST
+#### DB_PORT
+#### API_PORT

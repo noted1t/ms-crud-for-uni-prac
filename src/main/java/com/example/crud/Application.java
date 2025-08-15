@@ -1,7 +1,5 @@
 package com.example.crud;
 
-import com.example.crud.repository.EmployeeRepository;
-import io.micronaut.context.ApplicationContext;
 import io.micronaut.runtime.Micronaut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -19,7 +17,6 @@ import io.swagger.v3.oas.annotations.info.License;
 )
 public class Application {
     public static void main(String[] args) {
-        ApplicationContext context = Micronaut.run(Application.class, args);
-        EmployeeRepository repo = context.getBean(EmployeeRepository.class);
+        Micronaut.run(Application.class, args);
     }
 }
