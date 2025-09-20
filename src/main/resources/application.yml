@@ -6,6 +6,10 @@ micronaut:
         mapping: /swagger/**
     versioning:
       enabled: true
+  jpa:
+    default:
+      properties:
+        hibernate:
   openapi:
     enabled: true
     responses:
